@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from 'components';
 import styles from './home.less';
 
 class Home extends React.Component {
@@ -72,6 +73,13 @@ class Home extends React.Component {
               完成录制，等待验证结果
             </div>
           </div>
+          <Button
+            text="下一步"
+            wrapClassName={styles.button}
+            onClick={() => {
+              console.log(123);
+            }}
+          />
         </div>
       </div>
     );

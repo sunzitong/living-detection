@@ -29,13 +29,14 @@ export default {
   alias: {
     assets: path.resolve(__dirname, 'src/assets'),
     utils: path.resolve(__dirname, 'src/utils'),
+    components: path.resolve(__dirname, 'src/components'),
     '@': path.resolve(__dirname, 'src'),
   },
   routes: [
     {
       path: '/living-detection', component: '../layouts/index.js', routes: [
         // 我的积分
-        { path: '/living-detection/home', component: './home/Home', title: '我的积分' },
+        { path: '/living-detection/home', component: './home/Home', title: '活体识别' },
       ]
     },
   ],
