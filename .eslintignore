@@ -1,0 +1,7 @@
+.umi
+node_modules
+dist
+vconsole.js
+previewImage.min.js
+public
+release
