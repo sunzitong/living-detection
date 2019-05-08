@@ -1,0 +1,124 @@
+import fetch from 'dva/fetch';
+import { judgeSystem } from 'utils/judgeSystem';
+import judgeProject from 'utils/judgeProject';
+
+const codeMessage = {
+  200: '服务器成功返回请求的数据。',
+  201: '新建或修改数据成功。',
+  202: '一个请求已经进入后台排队（异步任务）。',
+  204: '删除数据成功。',
+  400: '发出的请求有错误，服务器没有进行新建或修改数据的操作。',
+  401: '身份过期,重新登陆app',
+  403: '用户得到授权，但是访问是被禁止的。',
+  404: '发出的请求针对的是不存在的记录，服务器没有进行操作。',
+  406: '请求的格式不可得。',
+  408: '请求超时',
+  410: '请求的资源被永久删除，且不会再得到的。',
+  422: '当创建一个对象时，发生一个验证错误。',
+  500: '服务器发生错误',
+  502: '网关错误。',
+  503: '服务不可用，服务器暂时过载或维护。',
+  504: '网关超时。',
+};
+function checkStatus(response) {
+  if (response.status === 200 || response.status === 304) {
+    return response;
+  }
+  const errortext = codeMessage[response.status] || response.statusText;
+  const error = new Error(errortext);
+  error.status = response.status;
+  error.response = response;
+  throw error;
+}
+
+export default function request(url, options) {
+  const token = sessionStorage.getItem('token');
+  const defaultOptions = {
+    credentials: 'include',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json; charset=utf-8',
+      Authorization: token,
+      Version: '1.0',
+      buCode: judgeSystem() === 'isAndroid' ? 'C30503' : judgeSystem() === 'isIos' ? 'C30603' : '',
+      clientIp: window.returnCitySN && window.returnCitySN.cip,
+    },
+  };
+  const newOptions = { ...defaultOptions, ...options };
+  if (newOptions.method === 'POST') {
+    if (!(newOptions.body instanceof FormData)) {
+      newOptions.headers = {
+        ...newOptions.headers,
+      };
+      newOptions.body = JSON.stringify(newOptions.body);
+    } else {
+      /**
+       * newOptions.body是FormData的情况，此时不可以设置hearder
+       */
+      newOptions.headers = {};
+      // 'Content-Type': 'multipart/form-data',
+    }
+  } else {
+    newOptions.headers = {
+      ...newOptions.headers,
+    };
+  }
+  let newUrl = '';
+  if (judgeProject() === '积分活动') {
+    newUrl = process.env.environment !== 'env'
+      ? `/uc/app${url}`
+      : `/app${url}`;
+  } else {
+    // eslint-disable-next-line
+    window.g_app._store.dispatch({
+      type: 'global/changeConfirmStatsu',
+      payload: {
+        isSingleButotn: true,
+        status: 'show',
+        title: '未能识别所属项目',
+        contentText: '',
+        singleButtonText: '确定',
+        confirmCallBack: () => { },
+      },
+    });
+    return;
+  }
+  return fetch(newUrl, newOptions)
+    .then(checkStatus)
+    .then(async (response) => {
+      const RESPONSE = response.json();
+      const result = await RESPONSE;
+      if (result.success !== true) {
+        // eslint-disable-next-line
+        window.g_app._store.dispatch({
+          type: 'global/changeConfirmStatsu',
+          payload: {
+            isSingleButotn: true,
+            status: 'show',
+            title: result.error,
+            contentText: '',
+            singleButtonText: '确定',
+            confirmCallBack: () => { },
+          },
+        });
+        return undefined;
+      }
+      return RESPONSE;
+    })
+    .catch((e) => {
+      if (e.message !== '已取消') {
+        // eslint-disable-next-line
+        window.g_app._store.dispatch({
+          type: 'global/changeConfirmStatsu',
+          payload: {
+            isSingleButotn: true,
+            status: 'show',
+            title: navigator.onLine ? e.message : '网络已断开，内容可能过期',
+            contentText: '',
+            singleButtonText: '确定',
+            confirmCallBack: () => { },
+          },
+        });
+      }
+    });
+}
