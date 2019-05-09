@@ -1,6 +1,8 @@
 import fetch from 'dva/fetch';
-import { judgeSystem } from 'utils/judgeSystem';
-import judgeProject from 'utils/judgeProject';
+import { Toast } from 'antd-mobile';
+import { accessToken } from '../../user';
+
+const origin = process.env.environment;
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -32,16 +34,11 @@ function checkStatus(response) {
 }
 
 export default function request(url, options) {
-  const token = sessionStorage.getItem('token');
   const defaultOptions = {
-    credentials: 'include',
+    // credentials: 'include',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json; charset=utf-8',
-      Authorization: token,
-      Version: '1.0',
-      buCode: judgeSystem() === 'isAndroid' ? 'C30503' : judgeSystem() === 'isIos' ? 'C30603' : '',
-      clientIp: window.returnCitySN && window.returnCitySN.cip,
+      'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
     },
   };
   const newOptions = { ...defaultOptions, ...options };
@@ -63,62 +60,23 @@ export default function request(url, options) {
       ...newOptions.headers,
     };
   }
-  let newUrl = '';
-  if (judgeProject() === '积分活动') {
-    newUrl = process.env.environment !== 'env'
-      ? `/uc/app${url}`
-      : `/app${url}`;
-  } else {
-    // eslint-disable-next-line
-    window.g_app._store.dispatch({
-      type: 'global/changeConfirmStatsu',
-      payload: {
-        isSingleButotn: true,
-        status: 'show',
-        title: '未能识别所属项目',
-        contentText: '',
-        singleButtonText: '确定',
-        confirmCallBack: () => { },
-      },
-    });
-    return;
-  }
+  const newUrl = `${origin === 'production' ? 'https://aip.baidubce.com' : ''}${url}?access_token=${accessToken}`;
   return fetch(newUrl, newOptions)
     .then(checkStatus)
     .then(async (response) => {
       const RESPONSE = response.json();
       const result = await RESPONSE;
-      if (result.success !== true) {
-        // eslint-disable-next-line
-        window.g_app._store.dispatch({
-          type: 'global/changeConfirmStatsu',
-          payload: {
-            isSingleButotn: true,
-            status: 'show',
-            title: result.error,
-            contentText: '',
-            singleButtonText: '确定',
-            confirmCallBack: () => { },
-          },
-        });
+      if (result.err_msg !== 'SUCCESS') {
+        Toast.fail(result.error_msg);
         return undefined;
       }
       return RESPONSE;
     })
     .catch((e) => {
-      if (e.message !== '已取消') {
-        // eslint-disable-next-line
-        window.g_app._store.dispatch({
-          type: 'global/changeConfirmStatsu',
-          payload: {
-            isSingleButotn: true,
-            status: 'show',
-            title: navigator.onLine ? e.message : '网络已断开，内容可能过期',
-            contentText: '',
-            singleButtonText: '确定',
-            confirmCallBack: () => { },
-          },
-        });
-      }
+      setTimeout(() => {
+        if (e.message !== '已取消') {
+          Toast.fail(e.message);
+        }
+      }, 0);
     });
 }

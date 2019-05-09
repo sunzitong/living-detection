@@ -11,16 +11,25 @@ const createDom = (text, type) => {
   return $dom;
 };
 
-return {
-  showToast: (text, type) => {
-    const $dom = createDom(text, type);
-    document.body.appendChild($dom);
-    // setTimeout(() => {
-    //   $dom.classList.add('show');
-    // }, 1);
+// return {
+//   showToast: (text, type) => {
+//     const $dom = createDom(text, type);
+//     document.body.appendChild($dom);
+// setTimeout(() => {
+//   $dom.classList.add('show');
+// }, 1);
 
-    // $dom.addEventListener('click', function (event) {
-    //   $dom.classList.remove('show');
-    // });
-  },
+// $dom.addEventListener('click', function (event) {
+//   $dom.classList.remove('show');
+// });
+//   },
+// };
+
+const showToast = (text, type) => {
+  const $dom = createDom(text, type);
+  document.body.appendChild($dom);
+};
+
+export {
+  showToast,
 };

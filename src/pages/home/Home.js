@@ -1,8 +1,42 @@
 import React from 'react';
-import { Button } from 'components';
+import ReactDom from 'react-dom';
+import { connect } from 'dva';
+import { Button, Modal } from 'components';
 import styles from './home.less';
 
+@connect(({ loading }) => ({
+  loading: loading.effects['home/verify'],
+}))
 class Home extends React.Component {
+  componentDidMount() {
+    // this.getVoiceSessionCode();
+  }
+
+  showModal = () => {
+    const div = document.createElement('div');
+    div.setAttribute('id', 'layer');
+    document.body.appendChild(div);
+    ReactDom.render(
+      <Modal
+        getVoiceSessionCode={this.getVoiceSessionCode}
+      // code={this.code}
+      // expiredCb={this.getVoiceSessionCode}
+      />, div);
+  }
+
+  getVoiceSessionCode = () => {
+    const { dispatch } = this.props;
+    const data = dispatch({
+      type: 'home/getVoiceSessionCode',
+    });
+    if (!data) return;
+    try {
+      return data;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   render() {
     return (
       <div
@@ -77,7 +111,7 @@ class Home extends React.Component {
             text="下一步"
             wrapClassName={styles.button}
             onClick={() => {
-              console.log(123);
+              this.showModal();
             }}
           />
         </div>

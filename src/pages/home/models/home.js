@@ -1,7 +1,7 @@
-// import {
-//   getEquityItemsDetail,
-//   receiveEquityItems,
-// } from '@/services/points/giftDetail';
+import {
+  getVoiceSessionCode,
+  verify,
+} from 'services';
 
 export default {
 
@@ -9,14 +9,14 @@ export default {
   },
 
   effects: {
-    // *getEquityItemsDetail({ payload }, { call }) {
-    //   const response = yield call(getEquityItemsDetail, payload);
-    //   return response;
-    // },
-    // *receiveEquityItems({ payload }, { call }) {
-    //   const response = yield call(receiveEquityItems, payload);
-    //   return response;
-    // },
+    *getVoiceSessionCode({ payload }, { call }) {
+      const response = yield call(getVoiceSessionCode, payload);
+      return response;
+    },
+    *verify({ payload }, { call }) {
+      const response = yield call(verify, payload);
+      return response;
+    },
   },
 
   reducers: {

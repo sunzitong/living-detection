@@ -1,9 +1,9 @@
 {
   "private": true,
   "scripts": {
-    "start": "umi dev",
-    "build": "umi build",
-    "test": "umi test",
+    "start": "cross-env environment=env umi dev",
+    "start-without-mock": "cross-env environment=online MOCK=none umi dev",
+    "build": "cross-env environment=production umi build",
     "lint": "./node_modules/.bin/eslint ."
   },
   "pre-commit": [
@@ -15,19 +15,21 @@
     "react-dom": "^16.7.0"
   },
   "devDependencies": {
-    "pre-commit": "^1.2.2",
     "babel-eslint": "^9.0.0",
+    "cross-env": "^5.2.0",
     "eslint": "^5.4.0",
-    "eslint-config-umi": "^1.4.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-prettier": "^3.3.0",
+    "eslint-config-umi": "^1.4.0",
     "eslint-plugin-flowtype": "^2.50.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.11.1",
     "husky": "^0.14.3",
     "lint-staged": "^7.2.2",
+    "pre-commit": "^1.2.2",
     "react-test-renderer": "^16.7.0",
+    "roadhog-api-doc": "^1.1.2",
     "umi": "^2.6.3",
     "umi-plugin-react": "^1.6.0"
   },
