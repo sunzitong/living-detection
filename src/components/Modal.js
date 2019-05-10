@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from 'components';
+import { Toast } from 'antd-mobile';
 import styles from './modal.less';
 
 class Modal extends React.Component {
@@ -28,6 +29,25 @@ class Modal extends React.Component {
       this.setState({
         code: data.result.code,
       });
+    });
+  }
+
+  verify = (videobase64) => {
+    const { verify } = this.props;
+    verify(videobase64).then((data) => {
+      try {
+        if (data.result.score > 0.393241) {
+          Toast.success('人脸认证成功！');
+        } else {
+          Toast.fail('人脸认证失败！');
+        }
+      } catch (e) {
+        console.log(e);
+      }
+      // console.log('videobase64', data);
+      // this.setState({
+      //   code: data.result.code,
+      // });
     });
   }
 
@@ -125,14 +145,15 @@ class Modal extends React.Component {
               className={styles.camera_input}
               disabled={ableCountdown > 0}
               onChange={(event) => {
-                console.log('event', event.target);
-                console.log('event', event.target.files[0]);
                 const reader = new FileReader();
                 reader.readAsDataURL(event.target.files[0]);
                 // 异步读取
                 reader.onload = (e) => {
-                  console.log(e);
                   console.log(e.target.result);
+                  // console.log(e.target.result);
+                  // this.verify(e.target.result)
+                  // this.verify(e.target.result.replace('data:video/quicktime;base64,', ''));
+                  this.verify(e.target.result.replace('data:video/quicktime;base64,', ''));
                 };
               }}
             />

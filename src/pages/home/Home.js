@@ -9,7 +9,6 @@ import styles from './home.less';
 }))
 class Home extends React.Component {
   componentDidMount() {
-    // this.getVoiceSessionCode();
   }
 
   showModal = () => {
@@ -19,8 +18,7 @@ class Home extends React.Component {
     ReactDom.render(
       <Modal
         getVoiceSessionCode={this.getVoiceSessionCode}
-      // code={this.code}
-      // expiredCb={this.getVoiceSessionCode}
+        verify={this.verify}
       />, div);
   }
 
@@ -28,6 +26,22 @@ class Home extends React.Component {
     const { dispatch } = this.props;
     const data = dispatch({
       type: 'home/getVoiceSessionCode',
+    });
+    if (!data) return;
+    try {
+      return data;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  verify = (videobase64) => {
+    const { dispatch } = this.props;
+    const data = dispatch({
+      type: 'home/verify',
+      payload: {
+        video_base64: videobase64,
+      },
     });
     if (!data) return;
     try {

@@ -14,6 +14,7 @@ export default {
       return response;
     },
     *verify({ payload }, { call }) {
+      console.log('payload', payload);
       const response = yield call(verify, payload);
       return response;
     },

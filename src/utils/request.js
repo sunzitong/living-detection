@@ -1,4 +1,5 @@
 import fetch from 'dva/fetch';
+import { stringify } from 'qs';
 import { Toast } from 'antd-mobile';
 import { accessToken } from '../../user';
 
@@ -38,16 +39,18 @@ export default function request(url, options) {
     // credentials: 'include',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
+      'Content-Type': 'application/x-www-form-urlencoded',
     },
   };
+  console.log('options', options);
   const newOptions = { ...defaultOptions, ...options };
   if (newOptions.method === 'POST') {
     if (!(newOptions.body instanceof FormData)) {
       newOptions.headers = {
         ...newOptions.headers,
       };
-      newOptions.body = JSON.stringify(newOptions.body);
+      console.log(stringify(newOptions.body));
+      newOptions.body = stringify(newOptions.body);
     } else {
       /**
        * newOptions.body是FormData的情况，此时不可以设置hearder
@@ -66,6 +69,7 @@ export default function request(url, options) {
     .then(async (response) => {
       const RESPONSE = response.json();
       const result = await RESPONSE;
+      console.log('result', result);
       if (result.err_msg !== 'SUCCESS') {
         Toast.fail(result.error_msg);
         return undefined;
