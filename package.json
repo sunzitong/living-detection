@@ -1,8 +1,8 @@
 {
   "private": true,
   "scripts": {
-    "start": "cross-env environment=env umi dev",
-    "start-without-mock": "cross-env environment=online MOCK=none umi dev",
+    "start": "cross-env environment=env PORT=8077 umi dev",
+    "start-without-mock": "cross-env environment=online MOCK=none PORT=8077 umi dev",
     "build": "cross-env environment=production umi build",
     "lint": "./node_modules/.bin/eslint ."
   },

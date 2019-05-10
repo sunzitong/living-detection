@@ -35,12 +35,13 @@ class Home extends React.Component {
     }
   }
 
-  verify = (videobase64) => {
+  verify = (videobase64, sessionId) => {
     const { dispatch } = this.props;
     const data = dispatch({
       type: 'home/verify',
       payload: {
         video_base64: videobase64,
+        session_id: sessionId,
       },
     });
     if (!data) return;

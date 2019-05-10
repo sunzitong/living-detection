@@ -26,15 +26,21 @@ class Modal extends React.Component {
   getVoiceSessionCode = () => {
     const { getVoiceSessionCode } = this.props;
     getVoiceSessionCode().then((data) => {
-      this.setState({
-        code: data.result.code,
-      });
+      try {
+        this.setState({
+          code: data.result.code,
+          sessionId: data.result.session_id,
+        });
+      } catch (e) {
+        console.log(e);
+      }
     });
   }
 
   verify = (videobase64) => {
     const { verify } = this.props;
-    verify(videobase64).then((data) => {
+    const { sessionId } = this.state;
+    verify(videobase64, sessionId).then((data) => {
       try {
         if (data.result.score > 0.393241) {
           Toast.success('人脸认证成功！');
@@ -44,10 +50,6 @@ class Modal extends React.Component {
       } catch (e) {
         console.log(e);
       }
-      // console.log('videobase64', data);
-      // this.setState({
-      //   code: data.result.code,
-      // });
     });
   }
 
@@ -147,13 +149,14 @@ class Modal extends React.Component {
               onChange={(event) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(event.target.files[0]);
+                Toast.loading('视频分析中...', 0);
                 // 异步读取
                 reader.onload = (e) => {
                   console.log(e.target.result);
                   // console.log(e.target.result);
                   // this.verify(e.target.result)
                   // this.verify(e.target.result.replace('data:video/quicktime;base64,', ''));
-                  this.verify(e.target.result.replace('data:video/quicktime;base64,', ''));
+                  this.verify(e.target.result.replace('data:video/mp4;base64,', ''));
                 };
               }}
             />

@@ -42,14 +42,12 @@ export default function request(url, options) {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
   };
-  console.log('options', options);
   const newOptions = { ...defaultOptions, ...options };
   if (newOptions.method === 'POST') {
     if (!(newOptions.body instanceof FormData)) {
       newOptions.headers = {
         ...newOptions.headers,
       };
-      console.log(stringify(newOptions.body));
       newOptions.body = stringify(newOptions.body);
     } else {
       /**
@@ -69,7 +67,6 @@ export default function request(url, options) {
     .then(async (response) => {
       const RESPONSE = response.json();
       const result = await RESPONSE;
-      console.log('result', result);
       if (result.err_msg !== 'SUCCESS') {
         Toast.fail(result.error_msg);
         return undefined;

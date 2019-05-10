@@ -4,7 +4,7 @@ let origin = process.env.environment;
 
 switch (origin) {
   case 'env':
-    origin = 'http://localhost:8000';
+    origin = 'http://localhost:8077';
     break;
   case 'online':
     origin = 'https://aip.baidubce.com';
@@ -13,7 +13,7 @@ switch (origin) {
   //   origin = 'http://work.order.gyapt.cn';
   //   break;
   default:
-    origin = 'http://localhost:8000';
+    origin = 'http://localhost:8077';
 }
 console.log(origin)
 export default {
