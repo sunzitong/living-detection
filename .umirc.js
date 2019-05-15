@@ -1,21 +1,25 @@
 import path from 'path';
 // ref: https://umijs.org/config/
 let origin = process.env.environment;
-
+let publicPath = '/';
 switch (origin) {
   case 'env':
     origin = 'http://localhost:8077';
+    publicPath = '/';
     break;
   case 'online':
     origin = 'https://aip.baidubce.com';
+    publicPath = '/';
     break;
-  // case 'production':
-  //   origin = 'http://work.order.gyapt.cn';
-  //   break;
+  case 'production':
+    origin = 'https://aip.baidubce.com';
+    publicPath = '/living-detection/';
+    break;
   default:
     origin = 'http://localhost:8077';
+    publicPath = '/';
 }
-console.log(origin)
+console.log(`origin:${origin}`)
 export default {
   treeShaking: true,
   plugins: [
@@ -42,6 +46,7 @@ export default {
       },
     }],
   ],
+  publicPath: publicPath,
   alias: {
     assets: path.resolve(__dirname, 'src/assets'),
     utils: path.resolve(__dirname, 'src/utils'),
@@ -49,11 +54,16 @@ export default {
     services: path.resolve(__dirname, 'src/services'),
     '@': path.resolve(__dirname, 'src'),
   },
+  base: '/living-detection',
+  history: 'hash',
+  define: {
+    "process.env.environment": process.env.environment
+  },
   routes: [
     {
-      path: '/living-detection', component: '../layouts/index.js', routes: [
+      path: '/', component: '../layouts/index.js', routes: [
         // 活体识别
-        { path: '/living-detection/home', component: './home/Home', title: '活体识别' },
+        { path: '/home', component: './home/Home', title: '活体识别' },
       ]
     },
   ],

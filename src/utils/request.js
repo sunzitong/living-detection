@@ -61,7 +61,9 @@ export default function request(url, options) {
       ...newOptions.headers,
     };
   }
+  console.log(`origin:${origin},origin === 'production':${origin === 'production'}`);
   const newUrl = `${origin === 'production' ? 'https://aip.baidubce.com' : ''}${url}?access_token=${accessToken}`;
+  console.log(`newUrl:${newUrl}`);
   return fetch(newUrl, newOptions)
     .then(checkStatus)
     .then(async (response) => {

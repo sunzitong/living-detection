@@ -142,7 +142,7 @@ class Modal extends React.Component {
           >
             <input
               type="file"
-              accept="video/*"
+              accept="video/*,audio/*"
               capture="camcorder"
               className={styles.camera_input}
               disabled={ableCountdown > 0}
@@ -152,11 +152,10 @@ class Modal extends React.Component {
                 Toast.loading('视频分析中...', 0);
                 // 异步读取
                 reader.onload = (e) => {
-                  console.log(e.target.result);
-                  // console.log(e.target.result);
-                  // this.verify(e.target.result)
+                  // console.log(e.target.result.split(',')[1]);
+                  this.verify(e.target.result.split(',')[1]);
                   // this.verify(e.target.result.replace('data:video/quicktime;base64,', ''));
-                  this.verify(e.target.result.replace('data:video/mp4;base64,', ''));
+                  // this.verify(e.target.result.replace('data:video/mp4;base64,', ''));
                 };
               }}
             />
